@@ -2,6 +2,21 @@
 
 A comprehensive Model Context Protocol (MCP) server for advanced stock market analysis, trend identification, portfolio management, dividend tracking, sector analysis, and risk metrics.
 
+## 📑 Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+  - [Prerequisites](#prerequisites)
+  - [Step-by-Step Setup](#step-1-get-the-code)
+  - [MCP Configuration](#step-4-configure-mcp-in-cursor)
+  - [Troubleshooting](#-troubleshooting)
+- [Usage Examples](#-usage-examples)
+- [Technical Indicators](#-technical-indicators-explained)
+- [Architecture](#️-architecture)
+- [Data Storage & Privacy](#-data-storage--privacy)
+- [Best Practices](#-best-practices)
+- [Dependencies](#-dependencies)
+
 ## 🚀 Features
 
 ### 📈 Price & Data Tools (`price_data.py`)
@@ -51,14 +66,239 @@ A comprehensive Model Context Protocol (MCP) server for advanced stock market an
 
 ## 📦 Installation
 
-1. Install dependencies:
+### Prerequisites
+
+Before you begin, ensure you have:
+- **Python 3.8 or higher** installed on your system
+- **Cursor IDE** (or another MCP-compatible client)
+- **Git** (optional, for cloning the repository)
+- Internet connection for fetching stock market data
+
+### Step 1: Get the Code
+
+**Option A: Clone from GitHub**
+```bash
+git clone https://github.com/CalvinLiuu/stock_mcp_server.git
+cd stock_mcp_server
+```
+
+**Option B: Download ZIP**
+- Download the repository as a ZIP file
+- Extract it to your desired location
+- Open a terminal and navigate to the extracted folder
+
+### Step 2: Set Up Virtual Environment
+
+Create and activate a virtual environment (recommended):
+
+**On macOS/Linux:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**On Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### Step 3: Install Dependencies
+
+With your virtual environment activated, install the required packages:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Run the server:
+This will install:
+- `yfinance` - For real-time stock market data
+- `pandas` - For data analysis
+- `numpy` - For numerical computations
+- `fastmcp` - For MCP server functionality
+
+### Step 4: Configure MCP in Cursor
+
+To use this server with Cursor IDE, you need to add it to your MCP configuration file.
+
+#### Locate Your MCP Configuration
+
+The MCP configuration file is typically located at:
+- **macOS/Linux**: `~/.cursor/mcp.json`
+- **Windows**: `%USERPROFILE%\.cursor\mcp.json`
+
+#### Add the Server Configuration
+
+Open the `mcp.json` file and add the following configuration (adjust the path to match your installation):
+
+**Option A: Using Python Module (Recommended)**
+```json
+{
+  "mcpServers": {
+    "stock-analyzer": {
+      "command": "/absolute/path/to/stock_mcp_server/.venv/bin/python",
+      "args": [
+        "-m",
+        "mcp.server.fastmcp",
+        "run",
+        "/absolute/path/to/stock_mcp_server/stock.server.py"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Option B: Using fastmcp CLI**
+```json
+{
+  "mcpServers": {
+    "stock-analyzer": {
+      "command": "/absolute/path/to/stock_mcp_server/.venv/bin/fastmcp",
+      "args": [
+        "dev",
+        "/absolute/path/to/stock_mcp_server/stock.server.py"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Important:** 
+- Replace `/absolute/path/to/stock_mcp_server/` with the actual full path to where you installed the server
+- On Windows, use backslashes and the appropriate paths (e.g., `C:\\Users\\YourName\\...`)
+- Make sure to use the Python interpreter from your virtual environment (`.venv/bin/python`)
+
+**Example for macOS:**
+```json
+{
+  "mcpServers": {
+    "stock-analyzer": {
+      "command": "/Users/johndoe/Documents/stock_mcp_server/.venv/bin/python",
+      "args": [
+        "-m",
+        "mcp.server.fastmcp",
+        "run",
+        "/Users/johndoe/Documents/stock_mcp_server/stock.server.py"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Example for Windows:**
+```json
+{
+  "mcpServers": {
+    "stock-analyzer": {
+      "command": "C:\\Users\\JohnDoe\\Documents\\stock_mcp_server\\.venv\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "mcp.server.fastmcp",
+        "run",
+        "C:\\Users\\JohnDoe\\Documents\\stock_mcp_server\\stock.server.py"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+### Step 5: Restart Cursor
+
+After updating your `mcp.json` configuration:
+1. **Save the file**
+2. **Completely restart Cursor** (close and reopen)
+3. The MCP server should automatically start when Cursor launches
+
+### Step 6: Verify Installation
+
+You can verify the installation by checking the MCP logs in Cursor or by trying to use one of the tools:
+
+**In Cursor's AI chat, try:**
+```
+Can you get the latest price for AAPL using the stock analyzer?
+```
+
+You should see the server responding with real-time stock data.
+
+**Or check available tools:**
+```
+What tools are available in the stock-analyzer MCP server?
+```
+
+### 🧪 Testing the Server Manually (Optional)
+
+To test the server outside of Cursor:
+
 ```bash
-python stock.server.py
+# Activate your virtual environment first
+source .venv/bin/activate  # macOS/Linux
+# or
+.venv\Scripts\activate  # Windows
+
+# Run the server in development mode
+fastmcp dev stock.server.py
+```
+
+You should see output like:
+```
+Registering price data tools...
+Registering portfolio management tools...
+Registering technical analysis tools...
+Registering alert system tools...
+Registering dividend tracking tools...
+Registering sector analysis tools...
+Registering risk analysis tools...
+✅ All tools registered successfully!
+📊 Stock Market Analyzer v0.3.0 is ready!
+```
+
+### 🔧 Troubleshooting
+
+**Server not starting?**
+- Verify the paths in your `mcp.json` are absolute paths (not relative)
+- Ensure you're using the Python from your virtual environment (`.venv/bin/python`)
+- Check that all dependencies are installed: `pip list` should show yfinance, pandas, numpy, fastmcp
+
+**"Module not found" errors?**
+- Make sure your virtual environment is activated
+- Reinstall dependencies: `pip install -r requirements.txt`
+
+**Can't fetch stock data?**
+- Check your internet connection
+- Some stocks may have delayed data or require different ticker symbols
+- Try a common stock like "AAPL" or "MSFT" first
+
+**MCP server not appearing in Cursor?**
+- Ensure the `mcp.json` file is valid JSON (no trailing commas, proper syntax)
+- Check Cursor's MCP logs for error messages
+- Try restarting Cursor completely
+
+**Permission errors on macOS/Linux?**
+- Make sure the Python executable is executable: `chmod +x .venv/bin/python`
+
+### 📱 Quick Start After Installation
+
+Once installed and configured, you can immediately start using the tools through Cursor's AI chat:
+
+```
+# Check a stock price
+"Get the latest price for Tesla"
+
+# Add to your portfolio
+"Add 10 shares of AAPL at $150 to my portfolio"
+
+# View your portfolio
+"Show me my current portfolio"
+
+# Set an alert
+"Alert me when TSLA goes below $250"
+
+# Analyze a stock
+"Analyze trends for NVDA"
 ```
 
 ## 🎯 Usage Examples
@@ -227,19 +467,90 @@ Each module is self-contained and can be updated independently:
 - **`sector.py`**: Sector-wide analysis and comparison
 - **`risk.py`**: Risk metrics and portfolio risk management
 
-## 📁 Data Persistence
+## 📁 Data Storage & Privacy
+
+### 🔒 Local Storage Only
+
+**Your data stays completely private and local:**
+- ✅ All portfolio data is stored on your computer only
+- ✅ No cloud storage or external servers
+- ✅ No authentication or account required
+- ✅ Full control over your data files
+- ✅ Can backup/edit JSON files directly
+
+**What gets stored locally:**
+- Your stock holdings and transactions → `portfolio.json`
+- Your price and RSI alerts → `alerts.json`
+
+**What goes to the internet:**
+- Only market data requests (stock prices, fundamentals, etc.) via Yahoo Finance API
+- Your personal portfolio data is NEVER transmitted anywhere
 
 ### Portfolio Data (`portfolio.json`)
-Automatically saved with:
+
+Location: Same directory as `stock.server.py`
+
+Automatically created and saved with:
 - Current holdings with average cost basis
 - Complete transaction history (buy/sell)
+- Profit/loss calculations
 - Last update dates
 
+**Example structure:**
+```json
+{
+  "holdings": {
+    "AAPL": {
+      "shares": 10,
+      "avg_price": 150.00,
+      "last_updated": "2025-01-15"
+    }
+  },
+  "transactions": [
+    {
+      "type": "BUY",
+      "ticker": "AAPL",
+      "shares": 10,
+      "price": 150.00,
+      "date": "2025-01-15",
+      "total": 1500.00
+    }
+  ]
+}
+```
+
 ### Alert Data (`alerts.json`)
-Automatically saved with:
-- Active price alerts
-- Active RSI alerts
-- Triggered alert history
+
+Location: Same directory as `stock.server.py`
+
+Automatically created and saved with:
+- Active price alerts (trigger above/below thresholds)
+- Active RSI alerts (overbought/oversold conditions)
+- Alert status and trigger history
+
+**Example structure:**
+```json
+{
+  "price_alerts": [
+    {
+      "id": "alert_123",
+      "ticker": "TSLA",
+      "target_price": 250.00,
+      "alert_type": "below",
+      "status": "active"
+    }
+  ],
+  "rsi_alerts": []
+}
+```
+
+### Backup Your Data
+
+Since all data is stored locally in JSON files, you can easily:
+- **Backup**: Copy `portfolio.json` and `alerts.json` to another location
+- **Restore**: Replace the files with your backup
+- **Edit**: Manually edit the JSON files if needed (be careful with formatting)
+- **Version Control**: Add to Git (but remember to add to `.gitignore` if sharing publicly)
 
 ## 🆕 What's New in v0.3.0
 
