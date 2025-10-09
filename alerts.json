@@ -1,0 +1,54 @@
+{
+  "price_alerts": [
+    {
+      "ticker": "CRM",
+      "target_price": 250.0,
+      "alert_type": "above",
+      "current_price": 240.43,
+      "alert_name": "CRM - First Profit Target",
+      "status": "active"
+    },
+    {
+      "ticker": "CRM",
+      "target_price": 262.0,
+      "alert_type": "above",
+      "current_price": 240.43,
+      "alert_name": "CRM - October Target (Analyst Avg)",
+      "status": "active"
+    },
+    {
+      "ticker": "CRM",
+      "target_price": 275.0,
+      "alert_type": "above",
+      "current_price": 240.43,
+      "alert_name": "CRM - Strong Profit Zone",
+      "status": "active"
+    },
+    {
+      "ticker": "CRM",
+      "target_price": 225.0,
+      "alert_type": "below",
+      "current_price": 240.43,
+      "alert_name": "CRM - Stop Loss Warning",
+      "status": "active"
+    }
+  ],
+  "rsi_alerts": [
+    {
+      "ticker": "CRM",
+      "rsi_threshold": 70.0,
+      "alert_type": "above",
+      "current_rsi": 45.92,
+      "alert_name": "CRM - Overbought (Consider Selling)",
+      "status": "active"
+    },
+    {
+      "ticker": "CRM",
+      "rsi_threshold": 30.0,
+      "alert_type": "below",
+      "current_rsi": 45.92,
+      "alert_name": "CRM - Oversold (Consider Buying)",
+      "status": "active"
+    }
+  ]
+}

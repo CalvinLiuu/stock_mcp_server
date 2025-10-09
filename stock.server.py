@@ -28,29 +28,14 @@ from risk import register_risk_tools
 mcp = FastMCP("Stock Market Analyzer")
 
 # Register all tool categories
-print("Registering price data tools...")
+# Note: Removed print statements to avoid interfering with MCP stdio protocol
 register_price_tools(mcp)
-
-print("Registering portfolio management tools...")
 register_portfolio_tools(mcp)
-
-print("Registering technical analysis tools...")
 register_analysis_tools(mcp)
-
-print("Registering alert system tools...")
 register_alert_tools(mcp)
-
-print("Registering dividend tracking tools...")
 register_dividend_tools(mcp)
-
-print("Registering sector analysis tools...")
 register_sector_tools(mcp)
-
-print("Registering risk analysis tools...")
 register_risk_tools(mcp)
-
-print("✅ All tools registered successfully!")
-print("📊 Stock Market Analyzer v0.3.0 is ready!")
 
 # Note: All tool implementations are now in separate modules:
 # - price_data.py: Price and stock information tools
