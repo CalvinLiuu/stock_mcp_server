@@ -9,8 +9,9 @@ A comprehensive MCP server for stock market analysis with:
 - Dividend tracking and analysis
 - Sector analysis and comparison
 - Risk metrics (Sharpe ratio, beta, VaR, drawdown, portfolio risk)
+- Market sentiment tracking (bearish/bullish signals)
 
-Version: 0.3.0
+Version: 0.4.0
 """
 
 from mcp.server.fastmcp import FastMCP
@@ -23,6 +24,7 @@ from alerts import register_alert_tools
 from dividends import register_dividend_tools
 from sector import register_sector_tools
 from risk import register_risk_tools
+from sentiment import register_sentiment_tools
 from stake import register_stake_tools
 
 # Initialize the FastMCP server
@@ -37,6 +39,7 @@ register_alert_tools(mcp)
 register_dividend_tools(mcp)
 register_sector_tools(mcp)
 register_risk_tools(mcp)
+register_sentiment_tools(mcp)
 register_stake_tools(mcp)
 
 # Note: All tool implementations are now in separate modules:
@@ -47,3 +50,4 @@ register_stake_tools(mcp)
 # - dividends.py: Dividend tracking tools
 # - sector.py: Sector analysis tools  
 # - risk.py: Risk metrics and portfolio risk tools
+# - sentiment.py: Market sentiment tracking and aggregation tools

@@ -1,6 +1,9 @@
 # Stock Market Analysis MCP Server
 
-A comprehensive Model Context Protocol (MCP) server for advanced stock market analysis, trend identification, portfolio management, dividend tracking, sector analysis, and risk metrics.
+A comprehensive Model Context Protocol (MCP) server for advanced stock market analysis, trend identification, portfolio management, dividend tracking, sector analysis, risk metrics, and market sentiment tracking.
+
+**Version:** 0.4.0  
+**Tools Available:** 48+
 
 ## 📑 Table of Contents
 
@@ -64,6 +67,18 @@ A comprehensive Model Context Protocol (MCP) server for advanced stock market an
 - **`calculate_portfolio_risk()`** - Comprehensive portfolio risk analysis with recommendations
 - **`calculate_var(ticker, confidence_level?, period?, position_size?)`** - Value at Risk calculation
 - **`calculate_drawdown(ticker, period?)`** - Maximum drawdown and peak-to-trough analysis
+
+### 📊 Market Sentiment Tracking (`sentiment.py`) ✨ NEW
+- **`get_market_sentiment()`** - Overall market sentiment score (-100 to +100) with actionable recommendations
+- **`get_detailed_sentiment_signals()`** - Detailed breakdown of all 9 market indicators
+- **`get_vix_analysis()`** - VIX volatility analysis (fear/greed gauge)
+- **`get_market_breadth()`** - Sector participation and market health analysis
+- **`get_sector_rotation_signal()`** - Defensive vs growth sector rotation patterns
+- **`get_ai_sector_signal()`** - AI/Tech sector leadership and strength analysis
+- **`analyze_leverage_indicators()`** - Market leverage and deleveraging signals
+- **`track_sentiment_history(days?)`** - Historical sentiment trends and momentum
+
+**Tracked Indicators:** VIX, SPY/QQQ trends, Put/Call ratio, Sector rotation, Market breadth, Volume patterns, AI/Tech leadership, Leverage stress
 
 ### 🤖 Stake Trading (`stake.py`)
 - **`configure_stake_connection(...)`** - Supply Stake API endpoint, account id, and session tokens
@@ -529,6 +544,7 @@ stake_execute_graphql(
 ```
 stock_mcp_server/
 ├── stock.server.py         # Main server entry point
+├── run_mcp_server.py       # Helper script to run server
 ├── utils.py                # Shared utilities (load/save data)
 ├── price_data.py           # Price and stock information
 ├── portfolio.py            # Portfolio management
@@ -537,11 +553,21 @@ stock_mcp_server/
 ├── dividends.py            # Dividend tracking
 ├── sector.py               # Sector analysis
 ├── risk.py                 # Risk metrics
+├── sentiment.py            # Market sentiment tracking ✨ NEW
 ├── stake.py                # Stake Australia trading helpers
-├── portfolio.json          # Portfolio data (auto-generated)
-├── alerts.json             # Alert data (auto-generated)
 ├── requirements.txt        # Python dependencies
-└── README.md               # Documentation
+├── README.md               # Main documentation
+├── data/                   # Data files (auto-generated)
+│   ├── portfolio.json      # Your portfolio holdings
+│   ├── alerts.json         # Your price/RSI alerts
+│   └── sentiment_history.json  # Sentiment tracking history
+├── docs/                   # Documentation files
+│   ├── TOOLS_REFERENCE.md  # Complete tools reference
+│   ├── IMPLEMENTATION_SUMMARY.md  # Implementation details
+│   ├── ROADMAP.md          # Future features roadmap
+│   ├── SENTIMENT_TRACKER_SUMMARY.md  # Sentiment tracker docs
+│   └── CURRENT_MARKET_ANALYSIS.md   # Market analysis example
+└── venv/                   # Python virtual environment
 ```
 
 ### Modular Design
@@ -556,6 +582,7 @@ Each module is self-contained and can be updated independently:
 - **`dividends.py`**: Dividend history and income tracking
 - **`sector.py`**: Sector-wide analysis and comparison
 - **`risk.py`**: Risk metrics and portfolio risk management
+- **`sentiment.py`**: Market sentiment aggregation and tracking ✨ NEW
 - **`stake.py`**: Unofficial Stake Australia order routing helpers
 
 ## 📁 Data Storage & Privacy
@@ -570,16 +597,17 @@ Each module is self-contained and can be updated independently:
 - ✅ Can backup/edit JSON files directly
 
 **What gets stored locally:**
-- Your stock holdings and transactions → `portfolio.json`
-- Your price and RSI alerts → `alerts.json`
+- Your stock holdings and transactions → `data/portfolio.json`
+- Your price and RSI alerts → `data/alerts.json`
+- Your sentiment tracking history → `data/sentiment_history.json`
 
 **What goes to the internet:**
 - Only market data requests (stock prices, fundamentals, etc.) via Yahoo Finance API
 - Your personal portfolio data is NEVER transmitted anywhere
 
-### Portfolio Data (`portfolio.json`)
+### Portfolio Data (`data/portfolio.json`)
 
-Location: Same directory as `stock.server.py`
+Location: `data/` folder in the project directory
 
 Automatically created and saved with:
 - Current holdings with average cost basis
@@ -610,9 +638,9 @@ Automatically created and saved with:
 }
 ```
 
-### Alert Data (`alerts.json`)
+### Alert Data (`data/alerts.json`)
 
-Location: Same directory as `stock.server.py`
+Location: `data/` folder in the project directory
 
 Automatically created and saved with:
 - Active price alerts (trigger above/below thresholds)
@@ -635,13 +663,50 @@ Automatically created and saved with:
 }
 ```
 
+### Sentiment History Data (`data/sentiment_history.json`) ✨ NEW
+
+Location: `data/` folder in the project directory
+
+Automatically created when you run sentiment analysis:
+- Daily sentiment scores (-100 to +100)
+- Historical classifications (bearish, neutral, bullish)
+- Keeps last 90 days of data
+- Enables trend analysis
+
+**Example structure:**
+```json
+{
+  "daily_scores": [
+    {
+      "date": "2025-10-23",
+      "score": 2.4,
+      "classification": "🟡 NEUTRAL"
+    }
+  ]
+}
+```
+
 ### Backup Your Data
 
 Since all data is stored locally in JSON files, you can easily:
-- **Backup**: Copy `portfolio.json` and `alerts.json` to another location
-- **Restore**: Replace the files with your backup
+- **Backup**: Copy the entire `data/` folder to another location
+- **Restore**: Replace the `data/` folder with your backup
 - **Edit**: Manually edit the JSON files if needed (be careful with formatting)
 - **Version Control**: Add to Git (but remember to add to `.gitignore` if sharing publicly)
+
+## 🆕 What's New in v0.4.0
+
+### New Features ✨
+1. **📊 Market Sentiment Tracker** - Aggregate 9 market indicators for overall sentiment (-100 to +100)
+   - VIX analysis, sector rotation, market breadth, AI/Tech signals
+   - Leverage indicators, Put/Call proxy, volume patterns
+   - Historical tracking and trend analysis
+   - Actionable recommendations based on market conditions
+
+### Project Organization
+- **New Folders**: `data/` for all JSON files, `docs/` for documentation
+- **Improved Structure**: Cleaner project layout with separated concerns
+- **Updated Docs**: Comprehensive documentation in `docs/` folder
 
 ## 🆕 What's New in v0.3.0
 

@@ -4,12 +4,18 @@ __pycache__/
 *$py.class
 *.so
 .Python
+*.egg-info/
+dist/
+build/
 
 # Virtual Environment
-.venv/
 venv/
-ENV/
+.venv/
 env/
+ENV/
+
+# Data files (keep your portfolio and alerts private)
+data/*.json
 
 # IDE
 .vscode/
@@ -22,5 +28,11 @@ env/
 .DS_Store
 Thumbs.db
 
-# Project specific
+# Logs
 *.log
+
+# MCP cache
+.mcp/
+
+# But keep the data directory structure
+!data/.gitkeep

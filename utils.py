@@ -6,10 +6,13 @@ import os
 from typing import Dict
 
 # Portfolio file path
-PORTFOLIO_FILE = os.path.join(os.path.dirname(__file__), "portfolio.json")
+PORTFOLIO_FILE = os.path.join(os.path.dirname(__file__), "data", "portfolio.json")
 
 # Alerts file path
-ALERTS_FILE = os.path.join(os.path.dirname(__file__), "alerts.json")
+ALERTS_FILE = os.path.join(os.path.dirname(__file__), "data", "alerts.json")
+
+# Sentiment history file path
+SENTIMENT_FILE = os.path.join(os.path.dirname(__file__), "data", "sentiment_history.json")
 
 
 def load_portfolio() -> Dict:
@@ -38,3 +41,17 @@ def save_alerts(alerts: Dict) -> None:
     """Save alerts to JSON file."""
     with open(ALERTS_FILE, 'w') as f:
         json.dump(alerts, f, indent=2)
+
+
+def load_sentiment_history() -> Dict:
+    """Load sentiment history from JSON file."""
+    if os.path.exists(SENTIMENT_FILE):
+        with open(SENTIMENT_FILE, 'r') as f:
+            return json.load(f)
+    return {"daily_scores": []}
+
+
+def save_sentiment_history(history: Dict) -> None:
+    """Save sentiment history to JSON file."""
+    with open(SENTIMENT_FILE, 'w') as f:
+        json.dump(history, f, indent=2)

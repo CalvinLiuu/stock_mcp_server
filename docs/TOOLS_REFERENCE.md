@@ -73,15 +73,6 @@
 | `analyze_leverage_indicators()` | Market leverage and stress signals |
 | `track_sentiment_history(days?)` | Historical sentiment trends |
 
-### 🤖 Stake Trading (5)
-| Tool | Description |
-|------|-------------|
-| `configure_stake_connection(...)` | Store API endpoint and tokens |
-| `stake_connection_status()` | View current (redacted) configuration |
-| `stake_execute_graphql(query, variables?)` | Run custom GraphQL operations |
-| `stake_place_order(symbol, side, qty, ...)` | Submit Stake trades |
-| `stake_cancel_order(order_id)` / `stake_list_orders(status?)` | Manage existing orders |
-
 ## 🎯 Quick Start Examples
 
 ### Beginner: Basic Stock Research
