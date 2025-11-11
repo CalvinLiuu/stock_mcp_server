@@ -23,6 +23,7 @@ from alerts import register_alert_tools
 from dividends import register_dividend_tools
 from sector import register_sector_tools
 from risk import register_risk_tools
+from stake import register_stake_tools
 
 # Initialize the FastMCP server
 mcp = FastMCP("Stock Market Analyzer")
@@ -36,6 +37,7 @@ register_alert_tools(mcp)
 register_dividend_tools(mcp)
 register_sector_tools(mcp)
 register_risk_tools(mcp)
+register_stake_tools(mcp)
 
 # Note: All tool implementations are now in separate modules:
 # - price_data.py: Price and stock information tools
