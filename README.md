@@ -11,6 +11,7 @@ A comprehensive Model Context Protocol (MCP) server for advanced stock market an
   - [MCP Configuration](#step-4-configure-mcp-in-cursor)
   - [Troubleshooting](#-troubleshooting)
 - [Usage Examples](#-usage-examples)
+- [Stake Trading Integration](#-stake-trading-integration)
 - [Technical Indicators](#-technical-indicators-explained)
 - [Architecture](#️-architecture)
 - [Data Storage & Privacy](#-data-storage--privacy)
@@ -63,6 +64,13 @@ A comprehensive Model Context Protocol (MCP) server for advanced stock market an
 - **`calculate_portfolio_risk()`** - Comprehensive portfolio risk analysis with recommendations
 - **`calculate_var(ticker, confidence_level?, period?, position_size?)`** - Value at Risk calculation
 - **`calculate_drawdown(ticker, period?)`** - Maximum drawdown and peak-to-trough analysis
+
+### 🤖 Stake Trading (`stake.py`)
+- **`configure_stake_connection(...)`** - Supply Stake API endpoint, account id, and session tokens
+- **`stake_execute_graphql(query, variables?)`** - Send custom GraphQL operations to Stake
+- **`stake_place_order(symbol, side, quantity, order_type?, ...)`** - Submit market/limit/stop orders
+- **`stake_cancel_order(order_id)`** - Cancel an existing order
+- **`stake_list_orders(status_filter?)`** - Review open or historical orders
 
 ## 📦 Installation
 
@@ -407,6 +415,87 @@ analyze_trends("NVDA", timeframe="1y")
 compare_stocks(["AAPL", "MSFT", "GOOGL"])
 ```
 
+## 🤖 Stake Trading Integration
+
+The MCP server now includes helper tools for forwarding trades to Stake Australia.
+Because Stake does not publish an official API, these helpers reuse the same
+GraphQL calls that the Stake web client performs. You **must** provide valid
+session tokens obtained from a manual login.
+
+### 1. Collect the required session details
+
+1. Log into [trade.stake.com](https://trade.stake.com) using your normal
+   browser.
+2. Open the network inspector and copy the latest `Authorization: Bearer ...`
+   header from any GraphQL request (this becomes your `access_token`).
+3. Locate your `accountId` value inside the GraphQL request payloads.
+4. Optional: copy any extra headers Stake expects (for example `x-client` or
+   `x-stake-platform`).
+
+> ⚠️ Tokens eventually expire. If you provide an epoch timestamp via the
+> `token_expiry` parameter the tools will remind you to refresh the session.
+
+### 2. Configure the Stake connection
+
+```python
+configure_stake_connection(
+    api_url="https://global-prd-api.stake.com",
+    graphql_path="/graphql",
+    account_id="<your-account-id>",
+    access_token="eyJhbGciOi...",
+    extra_headers={"x-client": "web"},
+    token_expiry=1719878400
+)
+```
+
+Alternatively, export environment variables before launching the MCP server:
+
+```bash
+export STAKE_API_URL="https://global-prd-api.stake.com"
+export STAKE_GRAPHQL_PATH="/graphql"
+export STAKE_ACCOUNT_ID="<your-account-id>"
+export STAKE_ACCESS_TOKEN="eyJhbGciOi..."
+export STAKE_EXTRA_HEADERS='{"x-client": "web"}'
+```
+
+### 3. Execute trades or manage orders
+
+```python
+# Submit a market buy
+stake_place_order("AAPL", "BUY", quantity=2)
+
+# Submit a limit sell outside regular hours
+stake_place_order(
+    "TSLA", "SELL", quantity=1,
+    order_type="LIMIT", limit_price=310.0,
+    outside_regular_hours=True
+)
+
+# Inspect and cancel orders
+stake_list_orders("OPEN")
+stake_cancel_order("order-id-from-list")
+```
+
+For advanced workflows you can run custom GraphQL operations:
+
+```python
+stake_execute_graphql(
+    """
+    query CashBalance($accountId: ID!) {
+      accountBalances(accountId: $accountId) {
+        cashAvailableForWithdrawal
+        cashAvailableToTrade
+      }
+    }
+    """,
+    {"accountId": "<your-account-id>"}
+)
+```
+
+> ℹ️  Stake may change their internal schema without notice. The
+> `stake_execute_graphql` tool lets you adapt by supplying updated queries or
+> mutations without editing the MCP server.
+
 ## 📊 Technical Indicators Explained
 
 ### RSI (Relative Strength Index)
@@ -448,6 +537,7 @@ stock_mcp_server/
 ├── dividends.py            # Dividend tracking
 ├── sector.py               # Sector analysis
 ├── risk.py                 # Risk metrics
+├── stake.py                # Stake Australia trading helpers
 ├── portfolio.json          # Portfolio data (auto-generated)
 ├── alerts.json             # Alert data (auto-generated)
 ├── requirements.txt        # Python dependencies
@@ -466,6 +556,7 @@ Each module is self-contained and can be updated independently:
 - **`dividends.py`**: Dividend history and income tracking
 - **`sector.py`**: Sector-wide analysis and comparison
 - **`risk.py`**: Risk metrics and portfolio risk management
+- **`stake.py`**: Unofficial Stake Australia order routing helpers
 
 ## 📁 Data Storage & Privacy
 

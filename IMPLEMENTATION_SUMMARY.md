@@ -23,6 +23,7 @@ stock_mcp_server/
 ├── dividends.py             # Dividend tracking (4 functions) ⭐ NEW
 ├── sector.py                # Sector analysis (4 functions) ⭐ NEW
 ├── risk.py                  # Risk metrics (5 functions) ⭐ NEW
+├── stake.py                 # Stake Australia trading helpers ⭐ NEW
 ├── requirements.txt         # Dependencies (updated with numpy)
 ├── README.md                # Complete documentation
 ├── TOOLS_REFERENCE.md       # Quick reference guide
@@ -39,6 +40,7 @@ stock_mcp_server/
 - 4 Dividend Tracking Tools ⭐ NEW
 - 4 Sector Analysis Tools ⭐ NEW
 - 5 Risk Metrics Tools ⭐ NEW
+- 5 Stake Trading Tools ⭐ NEW
 
 ## 🆕 New Features (v0.3.0)
 
@@ -153,6 +155,39 @@ calculate_portfolio_risk()
 
 # Calculate maximum potential loss (95% confidence)
 calculate_var("NVDA", confidence_level=0.95, position_size=10000)
+```
+
+### 5. Stake Trading (`stake.py`)
+**5 New Functions:**
+- `configure_stake_connection()` - Store Stake API endpoint, account id, and session tokens
+- `stake_connection_status()` - Inspect redacted configuration details
+- `stake_execute_graphql()` - Run arbitrary Stake GraphQL operations
+- `stake_place_order()` - Submit market/limit/stop orders
+- `stake_cancel_order()` / `stake_list_orders()` - Manage open orders
+
+**Features:**
+- Runtime session storage with optional on-disk persistence
+- Environment-variable bootstrap for automated deployments
+- Built-in token expiry validation to prevent stale sessions
+- Order helpers that default to Stake's GraphQL schema while remaining overridable
+- Raw GraphQL execution for rapid adaptation to Stake schema changes
+
+**Example Usage:**
+```python
+# Configure the connection using captured session tokens
+configure_stake_connection(
+    api_url="https://global-prd-api.stake.com",
+    graphql_path="/graphql",
+    account_id="<uuid>",
+    access_token="<jwt-token>",
+    extra_headers={"x-client": "web"}
+)
+
+# Submit a market buy
+stake_place_order("AAPL", "BUY", quantity=2)
+
+# Cancel a pending order
+stake_cancel_order("order-id")
 ```
 
 ## 🏗️ Architecture Improvements
